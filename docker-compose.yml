@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  ddns:
+    image: orvice/ddns
+    restart: always
+    volumes:
+      - ./log:/var/log
+    environment:
+      - DOMAIN=
+      - CF_API_KEY=
+      - CF_API_EMAIL=
+    container_name: ddns-auto
