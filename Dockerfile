@@ -1,4 +1,4 @@
-FROM golang:1.10 as builder
+FROM golang:1.9 as builder
 
 ## Create a directory and Add Code
 RUN mkdir -p /go/src/github.com/orvice/ddns
