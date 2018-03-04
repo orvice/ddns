@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/orvice/ddns/dns"
+	"github.com/orvice/kit/log"
 	"os"
 	"time"
 )
@@ -10,13 +11,16 @@ import (
 var (
 	dnsProvider dns.DNS
 	ipGetter    IPGetter
+
+	logger log.Logger
 )
 
 func Init() error {
 	var err error
+	logger = log.NewDefaultLogger()
 	GetConfigFromEnv()
 	ipGetter = NewIfconfigCo()
-	dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL)
+	dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger)
 	if err != nil {
 		return err
 	}
@@ -40,10 +44,13 @@ func main() {
 func updateIP() error {
 	ip, err := ipGetter.GetIP()
 	if err != nil {
+		logger.Errorf("Get ip error %v", err)
 		return err
 	}
+	logger.Infof("Get IP %s", ip)
 	err = dnsProvider.UpdateIP(DOMAIN, ip)
 	if err != nil {
+		logger.Errorf("Update ip error %v", err)
 		return err
 	}
 	return nil

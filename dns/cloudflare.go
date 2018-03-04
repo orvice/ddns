@@ -3,19 +3,22 @@ package dns
 import (
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/orvice/ddns/utils"
+	"github.com/orvice/kit/log"
 )
 
 type CloudFlare struct {
 	client *cloudflare.API
+	logger log.Logger
 }
 
-func NewCloudFlare(key, email string) (*CloudFlare, error) {
+func NewCloudFlare(key, email string, logger log.Logger) (*CloudFlare, error) {
 	client, err := cloudflare.New(key, email)
 	if err != nil {
 		return nil, err
 	}
 	return &CloudFlare{
 		client: client,
+		logger: logger,
 	}, nil
 }
 
