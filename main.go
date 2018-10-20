@@ -20,9 +20,18 @@ func Init() error {
 	logger = log.NewDefaultLogger()
 	GetConfigFromEnv()
 	ipGetter = NewIfconfigCo()
-	dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger)
-	if err != nil {
-		return err
+
+	switch DNS_MODE {
+	case DNS_MODE_MU:
+		dnsProvider, err = dns.NewMu(API_URI, NODE_ID)
+		if err != nil {
+			return err
+		}
+	default:
+		dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
