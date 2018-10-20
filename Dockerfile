@@ -10,7 +10,7 @@ RUN go get && CGO_ENABLED=0 go build
 
 FROM orvice/go-runtime:lite
 
-COPY --from=builder /go/src/github.com/orvice/ddns/ddns .
+COPY --from=builder /app/ddns .
 
 
 ENTRYPOINT [ "./ddns" ]
