@@ -57,6 +57,7 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 				c.logger.Infof("ip not change...")
 				continue
 			}
+			oldIP := r.Content
 			r.Content = ip
 			err = c.client.UpdateDNSRecord(zid, r.ID, r)
 			if err != nil {
@@ -65,7 +66,7 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 			c.logger.Infof("ip update success...")
 			if c.notify != nil {
 				err = c.notify.Send(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
-					domain, r.Content, ip))
+					domain, oldIP, ip))
 				if err != nil {
 					c.logger.Errorf("notify error %s", err.Error())
 				}
