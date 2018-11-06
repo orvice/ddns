@@ -19,6 +19,9 @@ var (
 
 	NODE_ID int
 	API_URI string
+
+	TELEGRAM_TOKEN  string
+	TELEGRAM_CHATID int64
 )
 
 func GetConfigFromEnv() {
@@ -33,4 +36,6 @@ func GetConfigFromEnv() {
 	NODE_ID = env.GetInt("MU_NODE_ID")
 	API_URI = env.Get("API_URI")
 
+	TELEGRAM_CHATID = int64(env.GetInt("TELEGRAM_CHATID"))
+	TELEGRAM_TOKEN = env.Get("TELEGRAM_TOKEN")
 }

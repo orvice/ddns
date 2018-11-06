@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/orvice/ddns/dns"
-	"github.com/orvice/kit/log"
 	"os"
 	"time"
+
+	"github.com/orvice/ddns/dns"
+	"github.com/orvice/ddns/notify"
+	"github.com/orvice/kit/log"
 )
 
 var (
@@ -21,6 +23,11 @@ func Init() error {
 	GetConfigFromEnv()
 	ipGetter = NewIfconfigCo()
 
+	notifier, err := notify.NewTelegramNotifier(TELEGRAM_TOKEN, TELEGRAM_CHATID)
+	if err != nil {
+		logger.Error(err)
+	}
+
 	switch DNS_MODE {
 	case DNS_MODE_MU:
 		dnsProvider, err = dns.NewMu(API_URI, NODE_ID)
@@ -28,7 +35,7 @@ func Init() error {
 			return err
 		}
 	default:
-		dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger)
+		dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger, notifier)
 		if err != nil {
 			return err
 		}

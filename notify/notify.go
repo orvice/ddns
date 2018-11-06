@@ -1,4 +1,4 @@
-package main
+package notify
 
 import (
 	"gopkg.in/telegram-bot-api.v4"
@@ -7,6 +7,8 @@ import (
 type Notifier interface {
 	Send(s string) error
 }
+
+var _ Notifier = new(TelegramNotifier)
 
 type TelegramNotifier struct {
 	bot    *tgbotapi.BotAPI
@@ -17,6 +19,7 @@ type TelegramNotifier struct {
 func NewTelegramNotifier(token string, chatID int64) (*TelegramNotifier, error) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
+		return nil, err
 	}
 
 	return &TelegramNotifier{
