@@ -61,7 +61,9 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 				return err
 			}
 			if c.notify != nil {
-				c.notify.Send(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s", domain, r.Content, ip))
+				err = c.notify.Send(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
+					domain, r.Content, ip))
+				c.logger.Errorf("notify error %s", err.Error())
 			}
 		}
 	}
