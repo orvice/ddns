@@ -53,6 +53,7 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 	for _, r := range rs {
 		if r.Type == "A" {
 			if r.Content == ip {
+				c.logger.Infof("ip not change...")
 				continue
 			}
 			r.Content = ip
@@ -60,10 +61,15 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 			if err != nil {
 				return err
 			}
+			c.logger.Infof("ip update success...")
 			if c.notify != nil {
 				err = c.notify.Send(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
 					domain, r.Content, ip))
-				c.logger.Errorf("notify error %s", err.Error())
+				if err != nil{
+					c.logger.Errorf("notify error %s", err.Error())
+				}
+			} else{
+				c.logger.Infof("skip notify")
 			}
 		}
 	}
