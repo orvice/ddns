@@ -22,6 +22,7 @@ func NewCloudFlare(key, email string, logger log.Logger, notify notify.Notifier)
 	return &CloudFlare{
 		client: client,
 		logger: logger,
+		notify: notify,
 	}, nil
 }
 
@@ -65,10 +66,10 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 			if c.notify != nil {
 				err = c.notify.Send(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
 					domain, r.Content, ip))
-				if err != nil{
+				if err != nil {
 					c.logger.Errorf("notify error %s", err.Error())
 				}
-			} else{
+			} else {
 				c.logger.Infof("skip notify")
 			}
 		}
