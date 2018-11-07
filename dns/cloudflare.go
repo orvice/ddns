@@ -3,6 +3,7 @@ package dns
 import (
 	"fmt"
 	"github.com/cloudflare/cloudflare-go"
+	"github.com/orvice/ddns/config"
 	"github.com/orvice/ddns/notify"
 	"github.com/orvice/ddns/utils"
 	"github.com/orvice/kit/log"
@@ -61,8 +62,7 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 			if err != nil {
 				return err
 			}
-			notify.Notify(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
-				domain, oldIP, ip))
+			notify.Notify(fmt.Sprintf(config.IpNotifyFormat, domain, oldIP, ip))
 		}
 	}
 	return nil

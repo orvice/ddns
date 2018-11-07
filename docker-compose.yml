@@ -12,4 +12,5 @@ services:
       - CF_API_EMAIL=
       - TELEGRAM_TOKEN=
       - TELEGRAM_CHATID=
+      - IP_CHANGE_FORMAT=[%s] ip changed, old IP: %s new IP: %s
     container_name: ddns-auto
