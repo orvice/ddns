@@ -11,10 +11,9 @@ import (
 type CloudFlare struct {
 	client *cloudflare.API
 	logger log.Logger
-	notify notify.Notifier
 }
 
-func NewCloudFlare(key, email string, logger log.Logger, notify notify.Notifier) (*CloudFlare, error) {
+func NewCloudFlare(key, email string, logger log.Logger) (*CloudFlare, error) {
 	client, err := cloudflare.New(key, email)
 	if err != nil {
 		return nil, err
@@ -22,7 +21,6 @@ func NewCloudFlare(key, email string, logger log.Logger, notify notify.Notifier)
 	return &CloudFlare{
 		client: client,
 		logger: logger,
-		notify: notify,
 	}, nil
 }
 
@@ -63,16 +61,8 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 			if err != nil {
 				return err
 			}
-			c.logger.Infof("ip update success...")
-			if c.notify != nil {
-				err = c.notify.Send(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
-					domain, oldIP, ip))
-				if err != nil {
-					c.logger.Errorf("notify error %s", err.Error())
-				}
-			} else {
-				c.logger.Infof("skip notify")
-			}
+			notify.Notify(fmt.Sprintf("[%s] ip changed, old IP: %s new IP: %s",
+				domain, oldIP, ip))
 		}
 	}
 	return nil

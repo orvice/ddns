@@ -23,9 +23,13 @@ func Init() error {
 	GetConfigFromEnv()
 	ipGetter = NewIfconfigCo()
 
+	notify.Init()
+
 	notifier, err := notify.NewTelegramNotifier(TELEGRAM_TOKEN, TELEGRAM_CHATID)
 	if err != nil {
 		logger.Errorf("notify init error %v", err)
+	} else {
+		notify.AddNotifier(notifier)
 	}
 
 	switch DNS_MODE {
@@ -35,7 +39,7 @@ func Init() error {
 			return err
 		}
 	default:
-		dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger, notifier)
+		dnsProvider, err = dns.NewCloudFlare(CF_API_KEY, CF_API_EMAIL, logger)
 		if err != nil {
 			return err
 		}

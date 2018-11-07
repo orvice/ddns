@@ -12,6 +12,7 @@ github.com/orvice/kit v0.0.0-20181024151443-bbea0f85c2d9/go.mod h1:l24cmkd/DAPoj
 github.com/orvice/utils v0.0.0-20170814120325-d2180b444704/go.mod h1:2WVdjh2swOycvNPtGpbP49+Idjavuop9pfYr8RytRfs=
 github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36 h1:AuGKyNjW6iAb+IGZbQFRPyjJjVR1o/vkCPZIXjOLU1k=
 github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36/go.mod h1:2WVdjh2swOycvNPtGpbP49+Idjavuop9pfYr8RytRfs=
+github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sirupsen/logrus v1.0.4/go.mod h1:pMByvHTf9Beacp5x1UXfOR9xyW/9antXMhjMPG0dEzc=
