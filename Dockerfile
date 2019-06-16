@@ -1,4 +1,7 @@
-FROM golang:1.11 as builder
+FROM golang:1.12 as builder
+
+ARG ARG_GOPROXY
+ENV GOPROXY $ARG_GOPROXY
 
 WORKDIR /home/app
 COPY go.mod go.sum ./
@@ -6,11 +9,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 go build -o ddns
+RUN make build
 
 
-FROM orvice/go-runtime:lite
+FROM orvice/go-runtime
 
-COPY --from=builder /home/app/ddns .
+ENV PROJECT_NAME ddns
 
-ENTRYPOINT [ "./ddns" ]
+COPY --from=builder /home/app/bin/${PROJECT_NAME} .
+
+ENTRYPOINT "./ddns"

@@ -6,15 +6,15 @@ import (
 	"github.com/orvice/ddns/config"
 	"github.com/orvice/ddns/notify"
 	"github.com/orvice/ddns/utils"
-	"github.com/orvice/kit/log"
+	"github.com/weeon/contract"
 )
 
 type CloudFlare struct {
 	client *cloudflare.API
-	logger log.Logger
+	logger contract.Logger
 }
 
-func NewCloudFlare(key, email string, logger log.Logger) (*CloudFlare, error) {
+func NewCloudFlare(key, email string, logger contract.Logger) (*CloudFlare, error) {
 	client, err := cloudflare.New(key, email)
 	if err != nil {
 		return nil, err
