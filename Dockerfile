@@ -16,4 +16,4 @@ FROM quay.io/orvice/go-runtime:latest
 
 ENV PROJECT_NAME ddns
 
-COPY --from=builder /home/app/bin/${PROJECT_NAME} ."
+COPY --from=builder /home/app/bin/${PROJECT_NAME} .
