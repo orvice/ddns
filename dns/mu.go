@@ -2,6 +2,7 @@ package dns
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,10 +20,10 @@ func NewMu(apiUrl string, nodeID int) (*Mu, error) {
 	}, nil
 }
 
-func (m *Mu) GetIP(domain string) (string, error) {
+func (m *Mu) GetIP(ctx context.Context, domain string) (string, error) {
 	return "", nil
 }
-func (m *Mu) UpdateIP(domain, ip string) error {
+func (m *Mu) UpdateIP(tx context.Context, domain, ip string) error {
 	uri := fmt.Sprintf("%s/nodes/%d/ip", m.apiUrl, m.nodeID)
 	ma := map[string]interface{}{
 		"ip":     ip,

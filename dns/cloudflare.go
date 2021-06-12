@@ -1,6 +1,7 @@
 package dns
 
 import (
+	"context"
 	"fmt"
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/orvice/ddns/config"
@@ -35,11 +36,11 @@ func (c *CloudFlare) GetDomainZoneID(domain string) (string, error) {
 }
 
 // @todo
-func (c *CloudFlare) GetIP(domain string) (string, error) {
+func (c *CloudFlare) GetIP(ctx context.Context, domain string) (string, error) {
 	return "", nil
 }
 
-func (c *CloudFlare) UpdateIP(domain, ip string) error {
+func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 	zid, err := c.GetDomainZoneID(domain)
 	if err != nil {
 		return err
@@ -62,7 +63,7 @@ func (c *CloudFlare) UpdateIP(domain, ip string) error {
 			if err != nil {
 				return err
 			}
-			notify.Notify(fmt.Sprintf(config.IpNotifyFormat, domain, oldIP, ip))
+			notify.Notify(ctx, fmt.Sprintf(config.IpNotifyFormat, domain, oldIP, ip))
 		}
 	}
 	return nil

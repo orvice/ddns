@@ -1,6 +1,8 @@
 package dns
 
+import "context"
+
 type DNS interface {
-	GetIP(domain string) (string, error)
-	UpdateIP(domain, ip string) error
+	GetIP(ctx context.Context, domain string) (string, error)
+	UpdateIP(ctx context.Context, domain, ip string) error
 }

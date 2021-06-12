@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/catpie/musdk-go"
 	"github.com/weeon/utils/task"
@@ -61,18 +62,22 @@ func main() {
 		os.Exit(0)
 	}
 
-	task.NewTaskAndRun("updateUpdate", time.Minute*3, updateIP, task.SetTaskLogger(log.GetDefault()))
+	ctx := context.Background()
+
+	task.NewTaskAndRun("updateUpdate", time.Minute*3, func() error {
+		return updateIP(ctx)
+	}, task.SetTaskLogger(log.GetDefault()))
 	select {}
 }
 
-func updateIP() error {
+func updateIP(ctx context.Context) error {
 	ip, err := ipGetter.GetIP()
 	if err != nil {
 		log.Errorf("Get ip error %v", err)
 		return err
 	}
 	log.Infof("Get IP %s", ip)
-	err = dnsProvider.UpdateIP(config.DOMAIN, ip)
+	err = dnsProvider.UpdateIP(ctx, config.DOMAIN, ip)
 	if err != nil {
 		log.Errorf("Update ip error %v", err)
 		return err

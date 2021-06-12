@@ -1,13 +1,14 @@
 package notify
 
 import (
+	"context"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
 var notifiers []Notifier
 
 type Notifier interface {
-	Send(s string) error
+	Send(ctx context.Context, s string) error
 }
 
 var _ Notifier = new(TelegramNotifier)
@@ -31,7 +32,7 @@ func NewTelegramNotifier(token string, chatID int64) (*TelegramNotifier, error) 
 	}, nil
 }
 
-func (t *TelegramNotifier) Send(s string) error {
+func (t *TelegramNotifier) Send(ctx context.Context, s string) error {
 	msg := tgbotapi.NewMessage(t.chatID, s)
 	_, err := t.bot.Send(msg)
 	return err
@@ -45,8 +46,8 @@ func AddNotifier(n Notifier) {
 	notifiers = append(notifiers, n)
 }
 
-func Notify(s string) {
+func Notify(ctx context.Context, s string) {
 	for _, n := range notifiers {
-		n.Send(s)
+		n.Send(ctx, s)
 	}
 }
