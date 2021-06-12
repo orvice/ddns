@@ -35,8 +35,22 @@ func (c *CloudFlare) GetDomainZoneID(domain string) (string, error) {
 	return id, nil
 }
 
-// @todo
 func (c *CloudFlare) GetIP(ctx context.Context, domain string) (string, error) {
+	zid, err := c.GetDomainZoneID(domain)
+	if err != nil {
+		return "", err
+	}
+	rs, err := c.client.DNSRecords(zid, cloudflare.DNSRecord{
+		Name: domain,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	for _, v := range rs {
+		return v.Content, nil
+	}
+
 	return "", nil
 }
 
