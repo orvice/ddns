@@ -12,10 +12,8 @@ COPY . .
 RUN make build
 
 
-FROM orvice/go-runtime
+FROM quay.io/orvice/go-runtime:latest
 
 ENV PROJECT_NAME ddns
 
-COPY --from=builder /home/app/bin/${PROJECT_NAME} .
-
-ENTRYPOINT "./ddns"
+COPY --from=builder /home/app/bin/${PROJECT_NAME} ."
