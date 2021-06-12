@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/weeon/log"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -36,6 +38,17 @@ func (m *Mu) UpdateIP(tx context.Context, domain, ip string) error {
 	}
 	input := bytes.NewBuffer(body)
 
-	http.DefaultClient.Post(uri, "application/json", input)
+	resp, err := http.DefaultClient.Post(uri, "application/json", input)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+	log.Debugw("update ip ",
+		"response", string(b),
+	)
+
 	return nil
 }
