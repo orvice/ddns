@@ -1,0 +1,20 @@
+
+image: docker:latest
+services:
+- docker:dind
+stages:
+- build
+- test
+- deploy
+coverage:
+  stage: test
+  image: golang:1.16
+  tags:
+  - docker
+  script:
+  - go mod download
+  - go test $(go list ./... | grep -v /vendor/) -v -coverprofile .testCoverage.txt
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
