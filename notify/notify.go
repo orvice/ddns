@@ -48,6 +48,6 @@ func AddNotifier(n Notifier) {
 
 func Notify(ctx context.Context, s string) {
 	for _, n := range notifiers {
-		n.Send(ctx, s)
+		_ = n.Send(ctx, s)
 	}
 }
