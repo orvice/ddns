@@ -11,6 +11,8 @@ all: build
 test: ## test
 	go test -v ./...
 
+lint: ## lint
+	golangci-lint run ./... --timeout 3m
 
 .PHONY: build
 build: ## build
