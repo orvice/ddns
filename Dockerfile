@@ -1,4 +1,4 @@
-FROM golang:1.16 as builder
+FROM golang:1.17 as builder
 
 ARG ARG_GOPROXY
 ENV GOPROXY $ARG_GOPROXY
@@ -12,7 +12,7 @@ COPY . .
 RUN make build
 
 
-FROM quay.io/orvice/go-runtime:latest
+FROM ghcr.io/orvice/go-runtime:master
 
 ENV PROJECT_NAME ddns
 
