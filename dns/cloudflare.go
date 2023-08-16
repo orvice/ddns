@@ -10,32 +10,32 @@ import (
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/orvice/ddns/config"
 	"github.com/orvice/ddns/notify"
-	"github.com/weeon/contract"
 )
 
 type CloudFlare struct {
 	client *cloudflare.API
-	logger contract.Logger
 }
 
-func NewCloudFlare(key, email string, logger contract.Logger) (*CloudFlare, error) {
-	client, err := cloudflare.New(key, email)
+func NewCloudFlare() (*CloudFlare, error) {
+	key := os.Getenv("CF_KEY")
+	email := os.Getenv("CF_EMAIL")
+	token := os.Getenv("CF_TOKEN")
+
+	var client *cloudflare.API
+	var err error
+
+	if token != "" {
+		slog.Info("cf use token")
+		client, err = cloudflare.NewWithAPIToken(token)
+	} else {
+		client, err = cloudflare.New(key, email)
+	}
 	if err != nil {
 		return nil, err
 	}
 
-	token := os.Getenv("CF_TOKEN")
-	if token != "" {
-		slog.Info("cf use token")
-		client, err = cloudflare.NewWithAPIToken(token)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return &CloudFlare{
 		client: client,
-		logger: logger,
 	}, nil
 }
 
@@ -104,7 +104,7 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 	for _, r := range rs {
 		if r.Type == "A" {
 			if r.Content == ip {
-				c.logger.Infof("ip not change...")
+				slog.Info("ip not change...")
 				continue
 			}
 			oldIP := r.Content

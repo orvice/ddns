@@ -46,7 +46,7 @@ func Init() error {
 			return err
 		}
 	default:
-		dnsProvider, err = dns.NewCloudFlare(config.CF_API_KEY, config.CF_API_EMAIL, log.GetDefault())
+		dnsProvider, err = dns.NewCloudFlare()
 		if err != nil {
 			return err
 		}

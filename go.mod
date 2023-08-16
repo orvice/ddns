@@ -4,7 +4,6 @@ require (
 	github.com/catpie/musdk-go v0.0.0-20230815021801-7d27a00f9c60
 	github.com/cloudflare/cloudflare-go v0.75.0
 	github.com/orvice/utils v0.0.0-20180715141935-5b71615d9c36
-	github.com/weeon/contract v0.0.0-20190520152601-a4ee53bdb563
 	github.com/weeon/log v0.0.0-20210217051817-63fe9a730962
 	github.com/weeon/utils v0.0.0-20190524044050-159b91233ff4
 	github.com/weppos/publicsuffix-go v0.4.0
@@ -21,6 +20,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.4 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
+	github.com/weeon/contract v0.0.0-20190520152601-a4ee53bdb563 // indirect
 	go.opentelemetry.io/otel v0.16.0 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
