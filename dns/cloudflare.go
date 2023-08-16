@@ -23,6 +23,16 @@ func NewCloudFlare(key, email string, logger contract.Logger) (*CloudFlare, erro
 	if err != nil {
 		return nil, err
 	}
+
+	token := os.Getenv("CF_TOKEN")
+	if token != "" {
+		slog.Info("cf use token")
+		client, err = cloudflare.NewWithAPIToken(token)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &CloudFlare{
 		client: client,
 		logger: logger,
