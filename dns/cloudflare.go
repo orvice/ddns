@@ -103,13 +103,18 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 	slog.Info("get dns records ", "count", ret.Count)
 	for _, r := range rs {
 		if r.Type == "A" {
-			if r.Content == ip {
-				slog.Info("ip not change...")
+
+			if r.Name != domain {
+				slog.Info("record name not match",
+					"id", r.ID,
+					"record_name", r.Name,
+					"domain", domain,
+				)
 				continue
 			}
 
-			if r.Name != domain {
-				slog.Info("record name not match", "record_name", r.Name, "domain", domain)
+			if r.Content == ip {
+				slog.Info("ip not change...")
 				continue
 			}
 
