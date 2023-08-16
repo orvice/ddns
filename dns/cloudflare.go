@@ -97,6 +97,8 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 				"domain", domain, "old_ip", oldIP, "new_ip", ip)
 
 			if err != nil {
+				slog.Error("update dns record error",
+					"err", err)
 				return err
 			}
 			notify.Notify(ctx, fmt.Sprintf(config.IpNotifyFormat, domain, oldIP, ip))
