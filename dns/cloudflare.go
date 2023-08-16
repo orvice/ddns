@@ -3,6 +3,8 @@ package dns
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/orvice/ddns/config"
 	"github.com/orvice/ddns/notify"
@@ -27,6 +29,10 @@ func NewCloudFlare(key, email string, logger contract.Logger) (*CloudFlare, erro
 }
 
 func (c *CloudFlare) GetDomainZoneID(domain string) (string, error) {
+	var domainID = os.Getenv("CF_DOMAIN_ID")
+	if domainID != "" {
+		return domainID, nil
+	}
 	zone := utils.GetDomainSuffix(domain)
 	id, err := c.client.ZoneIDByName(zone)
 	if err != nil {
