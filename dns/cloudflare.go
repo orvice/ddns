@@ -32,11 +32,13 @@ func NewCloudFlare(key, email string, logger contract.Logger) (*CloudFlare, erro
 func (c *CloudFlare) getZone(ctx context.Context, domain string) (*cloudflare.Zone, error) {
 	zones, err := c.client.ListZones(ctx)
 	if err != nil {
+		slog.Error("list zones error", "err", err)
 		return nil, err
 	}
 
 	for _, z := range zones {
 		if strings.Contains(domain, z.Name) {
+			slog.Info("get zone success", "zone", z.Name, "id", z.ID)
 			return &z, nil
 		}
 	}
@@ -44,9 +46,9 @@ func (c *CloudFlare) getZone(ctx context.Context, domain string) (*cloudflare.Zo
 }
 
 func (c *CloudFlare) GetDomainZoneID(domain string) (string, error) {
-	var domainID = os.Getenv("CF_DOMAIN_ID")
-	if domainID != "" {
-		return domainID, nil
+	var zoneID = os.Getenv("CF_ZONE_ID")
+	if zoneID != "" {
+		return zoneID, nil
 	}
 	zone, err := c.getZone(context.Background(), domain)
 	if err != nil {
