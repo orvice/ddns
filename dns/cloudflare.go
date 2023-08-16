@@ -128,10 +128,14 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 			})
 
 			slog.Info("update dns record",
+				"zone_id", zid,
 				"type", r.Type,
 				"record_id", r.ID,
-				"domain", domain, "old_ip",
-				oldIP, "new_ip", ip)
+				"domain", domain,
+				"name", r.Name,
+				"old_ip", oldIP,
+				"new_ip", ip,
+			)
 
 			if err != nil {
 				slog.Error("update dns record error",
