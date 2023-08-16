@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/orvice/ddns/config"
 	"github.com/orvice/ddns/notify"
-	"github.com/orvice/ddns/utils"
 	"github.com/weeon/contract"
 )
 
@@ -29,17 +29,30 @@ func NewCloudFlare(key, email string, logger contract.Logger) (*CloudFlare, erro
 	}, nil
 }
 
+func (c *CloudFlare) getZone(ctx context.Context, domain string) (*cloudflare.Zone, error) {
+	zones, err := c.client.ListZones(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, z := range zones {
+		if strings.Contains(domain, z.Name) {
+			return &z, nil
+		}
+	}
+	return nil, fmt.Errorf("not found zone")
+}
+
 func (c *CloudFlare) GetDomainZoneID(domain string) (string, error) {
 	var domainID = os.Getenv("CF_DOMAIN_ID")
 	if domainID != "" {
 		return domainID, nil
 	}
-	zone := utils.GetDomainSuffix(domain)
-	id, err := c.client.ZoneIDByName(zone)
+	zone, err := c.getZone(context.Background(), domain)
 	if err != nil {
-		return "", nil
+		slog.Error("get zone error", "err", err)
 	}
-	return id, nil
+	return zone.ID, nil
 }
 
 func (c *CloudFlare) GetIP(ctx context.Context, domain string) (string, error) {
