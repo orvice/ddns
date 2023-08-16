@@ -109,9 +109,7 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 			}
 			oldIP := r.Content
 			r.Content = ip
-			r, err = c.client.UpdateDNSRecord(ctx, &cloudflare.ResourceContainer{
-				Identifier: r.ID,
-			}, cloudflare.UpdateDNSRecordParams{
+			r, err = c.client.UpdateDNSRecord(ctx, cloudflare.ResourceIdentifier(zid), cloudflare.UpdateDNSRecordParams{
 				ID:      r.ID,
 				Type:    r.Type,
 				Name:    r.Name,
@@ -119,8 +117,10 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 			})
 
 			slog.Info("update dns record",
+				"type", r.Type,
 				"record_id", r.ID,
-				"domain", domain, "old_ip", oldIP, "new_ip", ip)
+				"domain", domain, "old_ip",
+				oldIP, "new_ip", ip)
 
 			if err != nil {
 				slog.Error("update dns record error",
