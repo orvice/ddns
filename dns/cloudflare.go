@@ -3,6 +3,7 @@ package dns
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/cloudflare/cloudflare-go"
@@ -46,12 +47,14 @@ func (c *CloudFlare) GetIP(ctx context.Context, domain string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	rs, err := c.client.DNSRecords(zid, cloudflare.DNSRecord{
-		Name: domain,
-	})
+	rs, ret, err := c.client.ListDNSRecords(ctx, &cloudflare.ResourceContainer{
+		// Name: domain,
+		Identifier: zid,
+	}, cloudflare.ListDNSRecordsParams{})
 	if err != nil {
 		return "", err
 	}
+	slog.Info("get dns records ", "count", ret.Count)
 
 	for _, v := range rs {
 		return v.Content, nil
@@ -65,12 +68,14 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 	if err != nil {
 		return err
 	}
-	rs, err := c.client.DNSRecords(zid, cloudflare.DNSRecord{
-		Name: domain,
-	})
+	rs, ret, err := c.client.ListDNSRecords(ctx, &cloudflare.ResourceContainer{
+		// Name: domain,
+		Identifier: zid,
+	}, cloudflare.ListDNSRecordsParams{})
 	if err != nil {
 		return err
 	}
+	slog.Info("get dns records ", "count", ret.Count)
 	for _, r := range rs {
 		if r.Type == "A" {
 			if r.Content == ip {
@@ -79,7 +84,13 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 			}
 			oldIP := r.Content
 			r.Content = ip
-			err = c.client.UpdateDNSRecord(zid, r.ID, r)
+			r, err = c.client.UpdateDNSRecord(ctx, &cloudflare.ResourceContainer{
+				Identifier: r.ID,
+			}, cloudflare.UpdateDNSRecordParams{
+				Type:    r.Type,
+				Name:    r.Name,
+				Content: ip,
+			})
 			if err != nil {
 				return err
 			}

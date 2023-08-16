@@ -5,14 +5,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/weeon/log"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/weeon/log"
 )
 
 type Mu struct {
-	apiUrl string `json:"api_url"`
-	nodeID int    `json:"node_id"`
+	apiUrl string
+	nodeID int
 }
 
 func NewMu(apiUrl string, nodeID int) (*Mu, error) {
