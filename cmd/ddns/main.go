@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/catpie/musdk-go"
-	"github.com/weeon/utils/task"
+	"log/slog"
 	"os"
 	"time"
+
+	"github.com/catpie/musdk-go"
+	"github.com/weeon/utils/task"
 
 	"github.com/orvice/ddns/dns"
 	"github.com/orvice/ddns/internal/config"
@@ -26,7 +28,7 @@ func Init() error {
 	var err error
 	config.GetConfigFromEnv()
 	ipGetter = ip.NewIfconfigCo()
-	muCli = musdk.ClientFromEnv()
+	muCli = musdk.ClientFromEnv(slog.Default())
 
 	notify.Init()
 
