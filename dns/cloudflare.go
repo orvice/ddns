@@ -112,6 +112,7 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 			r, err = c.client.UpdateDNSRecord(ctx, &cloudflare.ResourceContainer{
 				Identifier: r.ID,
 			}, cloudflare.UpdateDNSRecordParams{
+				ID:      r.ID,
 				Type:    r.Type,
 				Name:    r.Name,
 				Content: ip,
