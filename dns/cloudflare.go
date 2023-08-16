@@ -107,6 +107,12 @@ func (c *CloudFlare) UpdateIP(ctx context.Context, domain, ip string) error {
 				slog.Info("ip not change...")
 				continue
 			}
+
+			if r.Name != domain {
+				slog.Info("record name not match", "record_name", r.Name, "domain", domain)
+				continue
+			}
+
 			oldIP := r.Content
 			r.Content = ip
 			r, err = c.client.UpdateDNSRecord(ctx, cloudflare.ResourceIdentifier(zid), cloudflare.UpdateDNSRecordParams{
