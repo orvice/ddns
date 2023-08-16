@@ -14,6 +14,8 @@ RUN make build
 
 FROM ghcr.io/orvice/go-runtime:master
 
+LABEL org.opencontainers.image.description "DDNS"
+
 ENV PROJECT_NAME ddns
 
 COPY --from=builder /home/app/bin/${PROJECT_NAME} .
