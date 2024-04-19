@@ -2,7 +2,7 @@ package ip
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -26,13 +26,15 @@ func NewIfconfigCo() *IfconfigCo {
 }
 
 func (i *IfconfigCo) GetIP() (string, error) {
-	resp, err := http.DefaultClient.Get(IpConfigCoAddr)
+	cli := http.Client{}
+	defer cli.CloseIdleConnections()
+	resp, err := cli.Get(IpConfigCoAddr)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
 
-	s, err := ioutil.ReadAll(resp.Body)
+	s, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
