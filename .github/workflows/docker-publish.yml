@@ -7,7 +7,7 @@ name: Docker
 
 on:
   schedule:
-    - cron: '39 16 * * *'
+    - cron: '39 15 * * *'
   push:
     branches: [ "master" ]
   pull_request:
