@@ -85,6 +85,9 @@ func updateIP(ctx context.Context) error {
 	}
 
 	currentIP, err := dnsProvider.GetIP(ctx, config.DOMAIN)
+	if err != nil {
+		return err
+	}
 
 	log.Infow("get ip",
 		"from_getter", ip,
