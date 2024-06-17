@@ -67,7 +67,12 @@ func main() {
 	ctx := context.Background()
 
 	task.NewTaskAndRun("updateUpdate", time.Minute*3, func() error {
-		return updateIP(ctx)
+		err := updateIP(ctx)
+		if err != nil {
+			slog.Error("update ip error", "error", err.Error())
+			os.Exit(1)
+		}
+		return err
 	}, task.SetTaskLogger(log.GetDefault()))
 	select {}
 }
