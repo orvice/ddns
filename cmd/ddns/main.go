@@ -115,6 +115,7 @@ func updateIP(ctx context.Context) error {
 			{
 				Name:  name,
 				Value: ip,
+				Type:  "A",
 			},
 		})
 		if err != nil {
