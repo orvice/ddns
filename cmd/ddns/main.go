@@ -2,15 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/libdns/libdns"
-	"github.com/weeon/log"
-	"github.com/weeon/utils/task"
 
 	"github.com/orvice/ddns/dns"
 	"github.com/orvice/ddns/internal/config"
@@ -25,6 +22,7 @@ var (
 )
 
 func Init() error {
+	logger := slog.Default()
 	var err error
 	config.GetConfigFromEnv()
 	ipGetter = ip.NewIfconfigCo()
@@ -33,7 +31,7 @@ func Init() error {
 
 	notifier, err := notify.NewTelegramNotifier(config.TelegramToken, config.TelegramChatID)
 	if err != nil {
-		log.Errorf("notify init error %v", err)
+		logger.Error("notify init error", "error", err)
 	} else {
 		notify.AddNotifier(notifier)
 	}
@@ -47,25 +45,28 @@ func Init() error {
 }
 
 func main() {
-	var err error
-	log.FastInitFileLogger()
-	err = Init()
+	logger := slog.Default()
+	err := Init()
 	if err != nil {
-		fmt.Println(err)
+		logger.Error("init error", "error", err)
 		os.Exit(0)
 	}
 
 	ctx := context.Background()
 
-	task.NewTaskAndRun("updateUpdate", time.Minute*3, func() error {
-		err := updateIP(ctx)
-		if err != nil {
-			slog.Error("update ip error", "error", err.Error())
-			os.Exit(1)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			err := updateIP(ctx)
+			if err != nil {
+				logger.Error("update ip error", "error", err.Error())
+				os.Exit(1)
+			}
+			time.Sleep(time.Minute * 3)
 		}
-		return err
-	}, task.SetTaskLogger(log.GetDefault()))
-	select {}
+	}
 }
 
 func updateIP(ctx context.Context) error {
