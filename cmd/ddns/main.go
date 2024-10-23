@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -19,6 +20,10 @@ var (
 	dnsProvider dns.LibDNS
 	ipGetter    ip.Getter
 	DNSMode     string
+)
+
+var (
+	IPNotifyFormat = "[%s] ip changed, old IP: %s new IP: %s"
 )
 
 func Init() error {
@@ -110,6 +115,7 @@ func updateIP(ctx context.Context) error {
 			logger.Error("Set records error", "error", err)
 			return err
 		}
+		notify.Notify(ctx, fmt.Sprintf(IPNotifyFormat, config.DOMAIN, record.Value, ip))
 	} else {
 		_, err = dnsProvider.AppendRecords(ctx, zone, []libdns.Record{
 			{
