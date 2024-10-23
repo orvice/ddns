@@ -1,0 +1,67 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+  tests: false
+issues:
+  exclude-dirs:
+    - pkg/ent
+    - pkg/proto
+linters:
+  disable-all: true
+  fast: false
+  enable:
+    - bodyclose
+    - dogsled
+    - durationcheck
+    - errcheck
+    - copyloopvar
+    - govet
+    - gosimple
+    - gofmt
+    - goconst
+    - goimports
+    - mnd
+    - gocyclo
+    - ineffassign
+    - lll
+    - prealloc
+    - revive
+    - staticcheck
+    - typecheck
+    - unused
+    - unconvert
+    - whitespace
+    - wastedassign
+
+  # don't enable:
+  # - asciicheck
+  # - scopelint
+  # - gochecknoglobals
+  # - gocognit
+  # - godot
+  # - godox
+  # - goerr113
+  # - interfacer
+  # - maligned
+  # - nestif
+  # - prealloc
+  # - testpackage
+  # - stylrcheck
+  # - wsl
+
+linters-settings:
+  whitespace:
+    multi-func: true
+  lll:
+    line-length: 160
+  mnd:
+    # don't include the "operation", "argument" and "assign"
+    checks: 
+      - case
+      - condition
+      - return
+  goconst:
+    ignore-tests: true
+  gocyclo:
+    # recommend 10-20
+    min-complexity: 30

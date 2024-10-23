@@ -1,8 +1,11 @@
 package dns
 
-import "context"
+import (
+	"github.com/libdns/libdns"
+)
 
-type DNS interface {
-	GetIP(ctx context.Context, domain string) (string, error)
-	UpdateIP(ctx context.Context, domain, ip string) error
+type LibDNS interface {
+	libdns.RecordGetter
+	libdns.RecordAppender
+	libdns.RecordSetter
 }
