@@ -6,8 +6,6 @@ name: Docker
 # documentation.
 
 on:
-  schedule:
-    - cron: '39 15 * * *'
   push:
     branches: [ "master" ]
   pull_request:
