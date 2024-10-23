@@ -3,6 +3,7 @@ package ip
 import (
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 )
 
@@ -26,22 +27,27 @@ func NewIfconfigCo() *IfconfigCo {
 }
 
 func (i *IfconfigCo) GetIP() (string, error) {
+	logger := slog.Default()
 	cli := http.Client{}
 	defer cli.CloseIdleConnections()
 	resp, err := cli.Get(ipConfigCoAddr)
 	if err != nil {
+		logger.Error("get ip error", "error", err)
 		return "", err
 	}
 	defer resp.Body.Close()
 
 	s, err := io.ReadAll(resp.Body)
 	if err != nil {
+		logger.Error("read body error", "error", err)
 		return "", err
 	}
 	var ret Response
 	err = json.Unmarshal(s, &ret)
 	if err != nil {
+		logger.Error("unmarshal error", "error", err)
 		return "", err
 	}
+	logger.Info("get ip", "ip", ret.IP)
 	return ret.IP, nil
 }
