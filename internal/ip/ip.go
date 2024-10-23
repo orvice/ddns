@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	IpConfigCoAddr = "https://ifconfig.co/json"
+	ipConfigCoAddr = "https://ifconfig.co/json"
 )
 
-type IPResponse struct {
+type Response struct {
 	IP string `json:"ip"`
 }
 
-type IPGetter interface {
+type Getter interface {
 	GetIP() (string, error)
 }
 
@@ -28,7 +28,7 @@ func NewIfconfigCo() *IfconfigCo {
 func (i *IfconfigCo) GetIP() (string, error) {
 	cli := http.Client{}
 	defer cli.CloseIdleConnections()
-	resp, err := cli.Get(IpConfigCoAddr)
+	resp, err := cli.Get(ipConfigCoAddr)
 	if err != nil {
 		return "", err
 	}
@@ -38,7 +38,7 @@ func (i *IfconfigCo) GetIP() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var ret IPResponse
+	var ret Response
 	err = json.Unmarshal(s, &ret)
 	if err != nil {
 		return "", err

@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/catpie/musdk-go"
 	"github.com/libdns/libdns"
 	"github.com/weeon/log"
 	"github.com/weeon/utils/task"
@@ -21,27 +20,25 @@ import (
 
 var (
 	dnsProvider dns.LibDNS
-	ipGetter    ip.IPGetter
-	muCli       *musdk.Client
+	ipGetter    ip.Getter
+	DNSMode     string
 )
 
 func Init() error {
-
 	var err error
 	config.GetConfigFromEnv()
 	ipGetter = ip.NewIfconfigCo()
-	muCli = musdk.ClientFromEnv(slog.Default())
 
 	notify.Init()
 
-	notifier, err := notify.NewTelegramNotifier(config.TELEGRAM_TOKEN, config.TELEGRAM_CHATID)
+	notifier, err := notify.NewTelegramNotifier(config.TelegramToken, config.TelegramChatID)
 	if err != nil {
 		log.Errorf("notify init error %v", err)
 	} else {
 		notify.AddNotifier(notifier)
 	}
 
-	switch config.DNS_MODE {
+	switch config.DNSMode {
 	default:
 		dnsProvider = dns.NewCloudFlare()
 	}

@@ -33,7 +33,7 @@ func NewTelegramNotifier(token string, chatID int64) (*TelegramNotifier, error) 
 	}, nil
 }
 
-func (t *TelegramNotifier) Send(ctx context.Context, s string) error {
+func (t *TelegramNotifier) Send(_ context.Context, s string) error {
 	msg := tgbotapi.NewMessage(t.chatID, s)
 	resp, err := t.bot.Send(msg)
 	if err != nil {

@@ -1,7 +1,6 @@
 module github.com/orvice/ddns
 
 require (
-	github.com/catpie/musdk-go v0.0.0-20230815021801-7d27a00f9c60
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/libdns/cloudflare v0.1.1
 	github.com/libdns/libdns v0.2.2
@@ -28,6 +27,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-go 1.21
-
-toolchain go1.21.0
+go 1.23
