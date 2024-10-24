@@ -107,6 +107,7 @@ func updateIP(ctx context.Context) error {
 			logger.Info("ip is same, skip update", "ip", ip)
 			return nil
 		}
+		oldIP := record.Value
 		record.Value = ip
 		_, err = dnsProvider.SetRecords(ctx, zone, []libdns.Record{
 			*record,
@@ -115,7 +116,7 @@ func updateIP(ctx context.Context) error {
 			logger.Error("Set records error", "error", err)
 			return err
 		}
-		notify.Notify(ctx, fmt.Sprintf(IPNotifyFormat, config.DOMAIN, record.Value, ip))
+		notify.Notify(ctx, fmt.Sprintf(IPNotifyFormat, config.DOMAIN, oldIP, ip))
 	} else {
 		_, err = dnsProvider.AppendRecords(ctx, zone, []libdns.Record{
 			{
