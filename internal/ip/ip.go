@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
-	"net/http"
+
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 const (
@@ -28,9 +29,9 @@ func NewIfconfigCo() *IfconfigCo {
 
 func (i *IfconfigCo) GetIP() (string, error) {
 	logger := slog.Default()
-	cli := http.Client{}
-	defer cli.CloseIdleConnections()
-	resp, err := cli.Get(ipConfigCoAddr)
+	retryClient := retryablehttp.NewClient()
+	retryClient.RetryMax = 3
+	resp, err := retryClient.Get(ipConfigCoAddr)
 	if err != nil {
 		logger.Error("get ip error", "error", err)
 		return "", err
