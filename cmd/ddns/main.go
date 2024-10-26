@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/libdns/libdns"
-
 	"github.com/orvice/ddns/dns"
 	"github.com/orvice/ddns/internal/config"
 	"github.com/orvice/ddns/internal/ip"
@@ -29,19 +28,22 @@ var (
 func Init() error {
 	logger := slog.Default()
 	var err error
-	config.GetConfigFromEnv()
+	err = config.Init()
+	if err != nil {
+		return err
+	}
 	ipGetter = ip.NewIfconfigCo()
 
 	notify.Init()
 
-	notifier, err := notify.NewTelegramNotifier(config.TelegramToken, config.TelegramChatID)
+	notifier, err := notify.NewTelegramNotifier(config.GetConfig().TelegramToken, config.GetConfig().TelegramChatID)
 	if err != nil {
 		logger.Error("notify init error", "error", err)
 	} else {
 		notify.AddNotifier(notifier)
 	}
 
-	switch config.DNSMode {
+	switch config.GetConfig().DNSMode {
 	default:
 		dnsProvider = dns.NewCloudFlare()
 	}
@@ -82,7 +84,7 @@ func updateIP(ctx context.Context) error {
 		return err
 	}
 
-	name, zone := zoneFromDomain(config.DOMAIN)
+	name, zone := zoneFromDomain(config.GetConfig().Domain)
 	logger.Info("zone from domain",
 		"name", name,
 		"zone", zone)
@@ -116,7 +118,7 @@ func updateIP(ctx context.Context) error {
 			logger.Error("Set records error", "error", err)
 			return err
 		}
-		notify.Notify(ctx, fmt.Sprintf(IPNotifyFormat, config.DOMAIN, oldIP, ip))
+		notify.Notify(ctx, fmt.Sprintf(IPNotifyFormat, config.GetConfig().Domain, oldIP, ip))
 	} else {
 		_, err = dnsProvider.AppendRecords(ctx, zone, []libdns.Record{
 			{

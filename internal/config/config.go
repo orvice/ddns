@@ -1,22 +1,39 @@
 package config
 
-import "github.com/orvice/utils/env"
-
-var (
-	DOMAIN string
+import (
+	"github.com/spf13/viper"
 )
 
-var (
-	DNSMode string
+type Config struct {
+	DNSMode        string `mapstructure:"DNS_MODE"`
+	Domain         string `mapstructure:"DOMAIN"`
+	TelegramChatID int64  `mapstructure:"TELEGRAM_CHATID"`
+	TelegramToken  string `mapstructure:"TELEGRAM_TOKEN"`
+}
 
-	TelegramToken  string
-	TelegramChatID int64
+var (
+	config Config
 )
 
-func GetConfigFromEnv() {
-	DNSMode = env.Get("DNS_MODE", "cf")
-	DOMAIN = env.Get("DOMAIN")
+func Init() (err error) {
+	err = LoadConfig(".")
+	if err != nil {
+		return
+	}
+	return
+}
 
-	TelegramChatID = int64(env.GetInt("TELEGRAM_CHATID"))
-	TelegramToken = env.Get("TELEGRAM_TOKEN")
+func GetConfig() Config {
+	return config
+}
+
+func LoadConfig(path string) (err error) {
+	viper.AddConfigPath(path)
+	viper.SetConfigName("app")
+
+	viper.SetConfigType("env")
+	viper.AutomaticEnv()
+	// viper.ReadInConfig()
+	err = viper.Unmarshal(&config)
+	return
 }
