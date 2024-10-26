@@ -5,6 +5,6 @@ import (
 )
 
 func TestGetIP(t *testing.T) {
-	ip, err := NewIfconfigCo().GetIP()
+	ip, err := NewIfGetter().GetIP()
 	t.Log(ip, err)
 }

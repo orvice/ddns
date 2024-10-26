@@ -23,7 +23,7 @@ type Getter interface {
 type IfconfigCo struct {
 }
 
-func NewIfconfigCo() *IfconfigCo {
+func NewIfGetter() Getter {
 	return new(IfconfigCo)
 }
 
