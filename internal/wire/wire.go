@@ -9,10 +9,11 @@ import (
 	"github.com/orvice/ddns/internal/app"
 	"github.com/orvice/ddns/internal/config"
 	"github.com/orvice/ddns/internal/ip"
+	"github.com/orvice/ddns/notify"
 	"github.com/orvice/ddns/utils"
 )
 
 func NewApp() (*app.App, error) {
-	wire.Build(app.New, config.New, dns.New, ip.NewIfGetter, utils.NewLogger)
+	wire.Build(app.New, config.New, dns.New, ip.NewIfGetter, utils.NewLogger, notify.NewTelegramNotifier)
 	return &app.App{}, nil
 }

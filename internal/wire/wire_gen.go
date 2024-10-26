@@ -11,6 +11,7 @@ import (
 	"github.com/orvice/ddns/internal/app"
 	"github.com/orvice/ddns/internal/config"
 	"github.com/orvice/ddns/internal/ip"
+	"github.com/orvice/ddns/notify"
 	"github.com/orvice/ddns/utils"
 )
 
@@ -24,6 +25,10 @@ func NewApp() (*app.App, error) {
 	}
 	libDNS := dns.New(configConfig)
 	getter := ip.NewIfGetter()
-	appApp := app.New(logger, configConfig, libDNS, getter)
+	notifier, err := notify.NewTelegramNotifier(configConfig)
+	if err != nil {
+		return nil, err
+	}
+	appApp := app.New(logger, configConfig, libDNS, getter, notifier)
 	return appApp, nil
 }
