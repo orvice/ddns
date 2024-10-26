@@ -5,14 +5,19 @@ import (
 )
 
 type Config struct {
-	DNSMode        string `mapstructure:"DNS_MODE"`
+	DNSProvider    string `mapstructure:"DNS_PROVIDER"`
 	Domain         string `mapstructure:"DOMAIN"`
 	TelegramChatID int64  `mapstructure:"TELEGRAM_CHATID"`
 	TelegramToken  string `mapstructure:"TELEGRAM_TOKEN"`
+
+	CFToken string `mapstructure:"CF_TOKEN"`
+
+	AliyunAccessKeyID     string `mapstructure:"ALIYUN_ACCESS_KEY_ID"`
+	AliyunAccessKeySecret string `mapstructure:"ALIYUN_ACCESS_KEY_SECRET"`
 }
 
 var (
-	config Config
+	config = &Config{}
 )
 
 func Init() (err error) {
@@ -23,7 +28,7 @@ func Init() (err error) {
 	return
 }
 
-func GetConfig() Config {
+func GetConfig() *Config {
 	return config
 }
 
@@ -34,6 +39,6 @@ func LoadConfig(path string) (err error) {
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 	// viper.ReadInConfig()
-	err = viper.Unmarshal(&config)
+	err = viper.Unmarshal(config)
 	return
 }

@@ -43,10 +43,7 @@ func Init() error {
 		notify.AddNotifier(notifier)
 	}
 
-	switch config.GetConfig().DNSMode {
-	default:
-		dnsProvider = dns.NewCloudFlare()
-	}
+	dnsProvider = dns.New(config.GetConfig())
 
 	return nil
 }
