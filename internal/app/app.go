@@ -94,7 +94,7 @@ func (a *App) updateIP(ctx context.Context) error {
 			a.logger.Error("Set records error", "error", err)
 			return err
 		}
-		a.notifier.Send(ctx, fmt.Sprintf(IPNotifyFormat, a.config.Domain, oldIP, ip))
+		_ = a.notifier.Send(ctx, fmt.Sprintf(IPNotifyFormat, a.config.Domain, oldIP, ip))
 	} else {
 		_, err = a.dnsProvider.AppendRecords(ctx, zone, []libdns.Record{
 			{

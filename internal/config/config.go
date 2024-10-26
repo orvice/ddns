@@ -17,7 +17,7 @@ type Config struct {
 }
 
 func New() (*Config, error) {
-	var path string = "."
+	path := "."
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 

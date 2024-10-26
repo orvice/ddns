@@ -5,15 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/orvice/ddns/dns"
-	"github.com/orvice/ddns/internal/ip"
 	"github.com/orvice/ddns/internal/wire"
-)
-
-var (
-	dnsProvider dns.LibDNS
-	ipGetter    ip.Getter
-	DNSMode     string
 )
 
 var (
