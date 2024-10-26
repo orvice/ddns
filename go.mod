@@ -5,6 +5,7 @@ go 1.23
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/hashicorp/go-retryablehttp v0.7.7
+	github.com/libdns/alidns v1.0.3
 	github.com/libdns/cloudflare v0.1.1
 	github.com/libdns/libdns v0.2.2
 	github.com/spf13/viper v1.18.0

@@ -5,10 +5,15 @@ import (
 )
 
 type Config struct {
-	DNSMode        string `mapstructure:"DNS_MODE"`
+	DNSProvider    string `mapstructure:"DNS_PROVIDER"`
 	Domain         string `mapstructure:"DOMAIN"`
 	TelegramChatID int64  `mapstructure:"TELEGRAM_CHATID"`
 	TelegramToken  string `mapstructure:"TELEGRAM_TOKEN"`
+
+	CFToken string `mapstructure:"CF_TOKEN"`
+
+	AliyunAccessKeyID     string `mapstructure:"ALIYUN_ACCESS_KEY_ID"`
+	AliyunAccessKeySecret string `mapstructure:"ALIYUN_ACCESS_KEY_SECRET"`
 }
 
 var (
