@@ -17,7 +17,7 @@ type Config struct {
 }
 
 var (
-	config Config
+	config = &Config{}
 )
 
 func Init() (err error) {
@@ -28,7 +28,7 @@ func Init() (err error) {
 	return
 }
 
-func GetConfig() Config {
+func GetConfig() *Config {
 	return config
 }
 
@@ -39,6 +39,6 @@ func LoadConfig(path string) (err error) {
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 	// viper.ReadInConfig()
-	err = viper.Unmarshal(&config)
+	err = viper.Unmarshal(config)
 	return
 }

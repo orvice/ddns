@@ -43,12 +43,7 @@ func Init() error {
 		notify.AddNotifier(notifier)
 	}
 
-	switch config.GetConfig().DNSProvider {
-	case "aliyun":
-		dnsProvider = dns.NewAliyun()
-	default:
-		dnsProvider = dns.NewCloudFlare()
-	}
+	dnsProvider = dns.New(config.GetConfig())
 
 	return nil
 }
