@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/orvice/ddns/internal/config"
 )
 
 var notifiers []Notifier
@@ -21,15 +22,15 @@ type TelegramNotifier struct {
 	chatID int64
 }
 
-func NewTelegramNotifier(token string, chatID int64) (*TelegramNotifier, error) {
-	bot, err := tgbotapi.NewBotAPI(token)
+func NewTelegramNotifier(conf *config.Config) (Notifier, error) {
+	bot, err := tgbotapi.NewBotAPI(conf.TelegramToken)
 	if err != nil {
 		return nil, err
 	}
 	return &TelegramNotifier{
 		bot:    bot,
-		token:  token,
-		chatID: chatID,
+		token:  conf.TelegramToken,
+		chatID: conf.TelegramChatID,
 	}, nil
 }
 

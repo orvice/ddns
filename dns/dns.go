@@ -16,24 +16,24 @@ type LibDNS interface {
 func New(conf *config.Config) LibDNS {
 	switch conf.DNSProvider {
 	case "cloudflare":
-		return NewCloudFlare()
+		return NewCloudFlare(conf)
 	case "aliyun":
-		return NewAliyun()
+		return NewAliyun(conf)
 	}
 	return nil
 }
 
 // cloudflare
-func NewCloudFlare() LibDNS {
-	provider := cloudflare.Provider{APIToken: config.GetConfig().CFToken}
+func NewCloudFlare(conf *config.Config) LibDNS {
+	provider := cloudflare.Provider{APIToken: conf.CFToken}
 	return &provider
 }
 
 // aliyun
-func NewAliyun() LibDNS {
+func NewAliyun(conf *config.Config) LibDNS {
 	provider := alidns.Provider{
-		AccKeyID:     config.GetConfig().AliyunAccessKeyID,
-		AccKeySecret: config.GetConfig().AliyunAccessKeySecret,
+		AccKeyID:     conf.AliyunAccessKeyID,
+		AccKeySecret: conf.AliyunAccessKeySecret,
 	}
 	return &provider
 }
