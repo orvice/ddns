@@ -20,7 +20,7 @@ func New(conf *config.Config) LibDNS {
 	case "aliyun":
 		return NewAliyun(conf)
 	}
-	return nil
+	return NewCloudFlare(conf)
 }
 
 // cloudflare
