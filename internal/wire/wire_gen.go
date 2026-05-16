@@ -23,7 +23,10 @@ func NewApp() (*app.App, error) {
 	if err != nil {
 		return nil, err
 	}
-	libDNS := dns.New(configConfig)
+	libDNS, err := dns.New(configConfig)
+	if err != nil {
+		return nil, err
+	}
 	getter := ip.NewIfGetter()
 	notifier, err := notify.NewTelegramNotifier(configConfig)
 	if err != nil {
