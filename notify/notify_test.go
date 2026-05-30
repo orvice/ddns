@@ -20,7 +20,7 @@ func (f *fakeBot) Send(c tgbotapi.Chattable) (tgbotapi.Message, error) {
 
 func TestTelegramNotifier_Send(t *testing.T) {
 	bot := &fakeBot{}
-	n := NewTelegramNotifierWithSender(bot, 42)
+	n := NewTelegramNotifierWithSender(bot, 42, nil)
 
 	if err := n.Send(context.Background(), "hello"); err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -38,7 +38,7 @@ func TestTelegramNotifier_Send(t *testing.T) {
 }
 
 func TestTelegramNotifier_SendError(t *testing.T) {
-	n := NewTelegramNotifierWithSender(&fakeBot{err: errors.New("boom")}, 1)
+	n := NewTelegramNotifierWithSender(&fakeBot{err: errors.New("boom")}, 1, nil)
 	if err := n.Send(context.Background(), "x"); err == nil {
 		t.Fatal("expected error")
 	}

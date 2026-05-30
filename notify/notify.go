@@ -23,6 +23,7 @@ var _ Notifier = (*TelegramNotifier)(nil)
 type TelegramNotifier struct {
 	bot    tgSender
 	chatID int64
+	logger *slog.Logger
 }
 
 func NewTelegramNotifier(conf *config.Config) (Notifier, error) {
@@ -33,23 +34,26 @@ func NewTelegramNotifier(conf *config.Config) (Notifier, error) {
 	return &TelegramNotifier{
 		bot:    bot,
 		chatID: conf.TelegramChatID,
+		logger: slog.Default().With("notifier", "telegram"),
 	}, nil
 }
 
 // NewTelegramNotifierWithSender builds a TelegramNotifier with an injected
 // sender. Intended for tests.
-func NewTelegramNotifierWithSender(bot tgSender, chatID int64) *TelegramNotifier {
-	return &TelegramNotifier{bot: bot, chatID: chatID}
+func NewTelegramNotifierWithSender(bot tgSender, chatID int64, logger *slog.Logger) *TelegramNotifier {
+	if logger == nil {
+		logger = slog.Default()
+	}
+	return &TelegramNotifier{bot: bot, chatID: chatID, logger: logger}
 }
 
 func (t *TelegramNotifier) Send(_ context.Context, s string) error {
 	msg := tgbotapi.NewMessage(t.chatID, s)
-	resp, err := t.bot.Send(msg)
-	if err != nil {
-		slog.Error("send message error", "error", err.Error())
+	if _, err := t.bot.Send(msg); err != nil {
+		t.logger.Error("send message failed", "chat_id", t.chatID, "error", err)
 		return err
 	}
-	slog.Info("send message success", "resp", resp)
+	t.logger.Info("message sent", "chat_id", t.chatID)
 	return nil
 }
 
