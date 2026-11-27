@@ -16,15 +16,38 @@ type Config struct {
 	AliyunAccessKeySecret string `mapstructure:"ALIYUN_ACCESS_KEY_SECRET"`
 }
 
+// New loads configuration from environment variables (and optionally an `app`
+// file in the working directory). It uses a fresh viper instance so tests can
+// run in parallel without sharing state.
 func New() (*Config, error) {
-	path := "."
-	viper.AddConfigPath(path)
-	viper.SetConfigName("app")
+	return Load(".")
+}
 
-	viper.SetConfigType("env")
-	viper.AutomaticEnv()
-	// viper.ReadInConfig()
+// Load is like New but lets callers specify the search path. Useful for tests.
+func Load(path string) (*Config, error) {
+	v := viper.New()
+	v.AddConfigPath(path)
+	v.SetConfigName("app")
+	v.SetConfigType("env")
+	v.AutomaticEnv()
+
+	// Viper's AutomaticEnv only resolves keys that have been registered.
+	// Bind every struct tag so env vars are picked up reliably.
+	for _, key := range []string{
+		"DNS_PROVIDER",
+		"DOMAIN",
+		"TELEGRAM_CHATID",
+		"TELEGRAM_TOKEN",
+		"CF_TOKEN",
+		"ALIYUN_ACCESS_KEY_ID",
+		"ALIYUN_ACCESS_KEY_SECRET",
+	} {
+		_ = v.BindEnv(key)
+	}
+
 	var config Config
-	err := viper.Unmarshal(&config)
-	return &config, err
+	if err := v.Unmarshal(&config); err != nil {
+		return nil, err
+	}
+	return &config, nil
 }

@@ -8,17 +8,20 @@ import (
 	"github.com/orvice/ddns/internal/config"
 )
 
-var notifiers []Notifier
-
 type Notifier interface {
 	Send(ctx context.Context, s string) error
 }
 
-var _ Notifier = new(TelegramNotifier)
+// tgSender is the minimal surface TelegramNotifier needs from the bot API.
+// Implemented by *tgbotapi.BotAPI; trivially fakable in tests.
+type tgSender interface {
+	Send(c tgbotapi.Chattable) (tgbotapi.Message, error)
+}
+
+var _ Notifier = (*TelegramNotifier)(nil)
 
 type TelegramNotifier struct {
-	bot    *tgbotapi.BotAPI
-	token  string
+	bot    tgSender
 	chatID int64
 }
 
@@ -29,9 +32,14 @@ func NewTelegramNotifier(conf *config.Config) (Notifier, error) {
 	}
 	return &TelegramNotifier{
 		bot:    bot,
-		token:  conf.TelegramToken,
 		chatID: conf.TelegramChatID,
 	}, nil
+}
+
+// NewTelegramNotifierWithSender builds a TelegramNotifier with an injected
+// sender. Intended for tests.
+func NewTelegramNotifierWithSender(bot tgSender, chatID int64) *TelegramNotifier {
+	return &TelegramNotifier{bot: bot, chatID: chatID}
 }
 
 func (t *TelegramNotifier) Send(_ context.Context, s string) error {
@@ -45,16 +53,23 @@ func (t *TelegramNotifier) Send(_ context.Context, s string) error {
 	return nil
 }
 
-func Init() {
-	notifiers = make([]Notifier, 0)
+// MultiNotifier fans out one Send call to multiple underlying notifiers.
+// Errors are logged but not aggregated, matching prior best-effort semantics.
+type MultiNotifier struct {
+	notifiers []Notifier
 }
 
-func AddNotifier(n Notifier) {
-	notifiers = append(notifiers, n)
+func NewMultiNotifier(ns ...Notifier) *MultiNotifier {
+	return &MultiNotifier{notifiers: ns}
 }
 
-func Notify(ctx context.Context, s string) {
-	for _, n := range notifiers {
+func (m *MultiNotifier) Add(n Notifier) {
+	m.notifiers = append(m.notifiers, n)
+}
+
+func (m *MultiNotifier) Send(ctx context.Context, s string) error {
+	for _, n := range m.notifiers {
 		_ = n.Send(ctx, s)
 	}
+	return nil
 }

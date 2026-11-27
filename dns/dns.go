@@ -1,10 +1,17 @@
 package dns
 
 import (
+	"fmt"
+
 	"github.com/libdns/alidns"
 	"github.com/libdns/cloudflare"
 	"github.com/libdns/libdns"
 	"github.com/orvice/ddns/internal/config"
+)
+
+const (
+	ProviderCloudflare = "cloudflare"
+	ProviderAliyun     = "aliyun"
 )
 
 type LibDNS interface {
@@ -13,23 +20,25 @@ type LibDNS interface {
 	libdns.RecordSetter
 }
 
-func New(conf *config.Config) LibDNS {
+// New returns the DNS provider selected by conf.DNSProvider. An empty value
+// defaults to Cloudflare; an unknown value returns an error so misconfiguration
+// fails loudly.
+func New(conf *config.Config) (LibDNS, error) {
 	switch conf.DNSProvider {
-	case "cloudflare":
-		return NewCloudFlare(conf)
-	case "aliyun":
-		return NewAliyun(conf)
+	case "", ProviderCloudflare:
+		return NewCloudFlare(conf), nil
+	case ProviderAliyun:
+		return NewAliyun(conf), nil
+	default:
+		return nil, fmt.Errorf("unknown dns provider: %q", conf.DNSProvider)
 	}
-	return NewCloudFlare(conf)
 }
 
-// cloudflare
 func NewCloudFlare(conf *config.Config) LibDNS {
 	provider := cloudflare.Provider{APIToken: conf.CFToken}
 	return &provider
 }
 
-// aliyun
 func NewAliyun(conf *config.Config) LibDNS {
 	provider := alidns.Provider{
 		AccKeyID:     conf.AliyunAccessKeyID,
